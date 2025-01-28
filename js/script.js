@@ -19,7 +19,7 @@ let matchedPairs = 0;
 let timerInterval; // To store the timer interval
 let elapsedTime = 0; // Time in seconds
 let hasStarted = false; // flag for if the game has started
-
+let lockBoard = false //flag to prevent clicking on cards before setTimeout() completes
 
 // Card image sources (pairs)
 const images = [
@@ -67,13 +67,14 @@ function initializeGame() {
     cards = shuffle(images).map((image) => createCardElement(image));
     gameBoard.innerHTML = '';
     cards.forEach((card) => gameBoard.appendChild(card));
+    //resetting the state for a new game
     moves = 0;
     matchedPairs = 0;
-    elapsedTime = 0; // Reset the timer
+    elapsedTime = 0; 
     hasStarted = false;
     updateMoves();
     messageDisplay.textContent = '';
-    updateTimer(); // Reset the timer display
+    updateTimer();
 
     // Start the timer
     clearInterval(timerInterval); // Clear any previous timer
@@ -93,7 +94,8 @@ function handleCardClick(event) {
         }, 1000);
     }
     
-    if (clickedCard === firstCard || clickedCard.classList.contains('matched')) {
+    if (lockBoard || clickedCard === firstCard || clickedCard.classList.contains('matched')) {
+        cardFlip.pause();
         return; // Prevents double-clicks or clicking matched cards
     }
 
@@ -107,6 +109,7 @@ function handleCardClick(event) {
         firstCard = clickedCard;
     } else if (!secondCard) {
         secondCard = clickedCard;
+        lockBoard = true; //preventing extra card clicks
         checkForMatch();
     }
 }
@@ -154,13 +157,14 @@ function checkForMatch() {
     }
 }
 
-// Reset card selections
+// Reset card selections after two cards have been clicked on
 function resetSelections() {
+    lockBoard = false; //allow for clicks again
     firstCard = null;
     secondCard = null;
 }
 
-// Update moves display
+// keep track of moves
 function updateMoves() {
     movesCounter.innerHTML = `<h3>Moves: ${moves}</h3>`;
 }
@@ -176,4 +180,3 @@ function updateTimer() {
 document.addEventListener("DOMContentLoaded", () => {
     initializeGame();
 });
-
