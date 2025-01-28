@@ -39,7 +39,7 @@ const shuffle = (array) => {
     return array;
 };
 
-// Creating a card element
+// Creating a card element and adding it to the DOM
 function createCardElement(image) {
     const card = document.createElement('div');
     card.classList.add('card');
@@ -95,7 +95,7 @@ function handleCardClick(event) {
     }
     
     if (lockBoard || clickedCard === firstCard || clickedCard.classList.contains('matched')) {
-        cardFlip.pause();
+        cardFlip.pause(); //prevents cardFlip sound from playing on already clicked cards
         return; // Prevents double-clicks or clicking matched cards
     }
 
@@ -109,7 +109,7 @@ function handleCardClick(event) {
         firstCard = clickedCard;
     } else if (!secondCard) {
         secondCard = clickedCard;
-        lockBoard = true; //preventing extra card clicks
+        lockBoard = true; //prevents extra card clicks
         checkForMatch();
     }
 }
@@ -132,7 +132,7 @@ function checkForMatch() {
             matched.pause();
             victoryMusic.play();
 
-            // .message only fills with this info after winning the game
+            // .message div only fills with this info after winning the game
             messageDisplay.innerHTML = `<h3>Congrats, you won in ${moves} moves!</h3>`;
             const newGameButton = document.createElement('button');
             newGameButton.textContent = 'Play Again';
@@ -159,7 +159,7 @@ function checkForMatch() {
 
 // Reset card selections after two cards have been clicked on
 function resetSelections() {
-    lockBoard = false; //allow for clicks again
+    lockBoard = false; //allows for card clicks again
     firstCard = null;
     secondCard = null;
 }
